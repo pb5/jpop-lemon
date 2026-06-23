@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>米津玄師「レモン」スタイル 作曲テンプレ for Logic Pro</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Noto+Serif+JP:wght@400;700&family=DM+Mono:wght@400;500&display=swap');
+  :root {
+    --bg: #0c0c14; --card: #12121e; --border: #1e1e30;
+    --accent: #c8b4e8; --accent2: #f0d080; --accent3: #7ab8d4;
+    --text: #ece8f4; --muted: #52526a; --glow: rgba(200,180,232,0.15); --glow2: rgba(240,208,128,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Noto Sans JP', sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+  /* HERO */
+  .hero { position: relative; text-align: center; padding: 64px 20px 52px; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 55% at 50% -5%, rgba(200,180,232,.22) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 30% at 15% 100%, rgba(122,184,212,.12) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 30% at 85% 100%, rgba(240,208,128,.1) 0%, transparent 55%);
+    pointer-events: none; }
+  .hero-eyebrow { font-family: 'DM Mono', monospace; font-size: .68rem; letter-spacing: .22em; color: var(--accent3); text-transform: uppercase; margin-bottom: 16px; position: relative; z-index: 1; }
+  .hero h1 { font-family: 'Noto Serif JP', serif; font-size: clamp(2rem, 5.5vw, 3.4rem); font-weight: 700; line-height: 1.2; margin-bottom: 10px; position: relative; z-index: 1; color: var(--accent); letter-spacing: .04em; }
+  .hero-sub { font-family: 'DM Mono', monospace; font-size: .75rem; color: var(--muted); margin-bottom: 18px; letter-spacing: .12em; position: relative; z-index: 1; }
+  .hero p { color: var(--muted); font-size: .93rem; max-width: 500px; margin: 0 auto; line-height: 1.9; position: relative; z-index: 1; }
+  .badge-row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 20px; position: relative; z-index: 1; }
+  .badge { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 4px 14px; font-size: .72rem; color: var(--accent); letter-spacing: .04em; }
+
+  /* レモンの粒アニメ */
+  @keyframes float { 0%,100% { transform: translateY(0); opacity:.3; } 50% { transform: translateY(-8px); opacity:.6; } }
+  .lemon-deco { position: absolute; font-size: 1.2rem; animation: float 4s ease-in-out infinite; z-index: 0; }
+
+  .container { max-width: 880px; margin: 0 auto; padding: 0 16px 80px; }
+  .sec-title { font-family: 'Noto Serif JP', serif; font-size: .9rem; letter-spacing: .1em; color: var(--accent); margin: 44px 0 16px; display: flex; align-items: center; gap: 12px; font-weight: 700; }
+  .sec-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--accent), transparent); opacity: .25; }
+
+  /* スタイル説明 */
+  .style-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 10px; }
+  .style-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; transition: all .2s; }
+  .style-card:hover { border-color: var(--accent); box-shadow: 0 0 12px var(--glow); }
+  .style-icon { font-size: 1.3rem; margin-bottom: 8px; }
+  .style-name { font-weight: 700; font-size: .86rem; color: var(--accent); margin-bottom: 4px; }
+  .style-desc { font-size: .74rem; color: var(--muted); line-height: 1.65; }
+
+  /* パラメータ */
+  .param-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  .param-table th { text-align: left; padding: 10px 14px; color: var(--accent3); font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; border-bottom: 1px solid var(--border); font-weight: 400; font-family: 'DM Mono', monospace; }
+  .param-table td { padding: 10px 14px; border-bottom: 1px solid rgba(30,30,48,.8); vertical-align: top; }
+  .param-table tr:last-child td { border-bottom: none; }
+  .param-table td:first-child { color: var(--text); font-weight: 700; width: 130px; }
+  .param-table td:nth-child(2) { color: var(--accent2); font-family: 'DM Mono', monospace; }
+  .param-table td:nth-child(3) { color: var(--muted); font-size: .8rem; }
+
+  /* 構成 */
+  .timeline { display: flex; flex-direction: column; gap: 6px; }
+  .tl-row { display: grid; grid-template-columns: 72px 1fr; gap: 10px; }
+  .tl-time { font-family: 'DM Mono', monospace; font-size: .68rem; color: var(--muted); text-align: right; padding-top: 12px; border-right: 2px solid var(--border); padding-right: 10px; }
+  .tl-time.purple { border-right-color: var(--accent); color: var(--accent); }
+  .tl-time.gold { border-right-color: var(--accent2); color: var(--accent2); }
+  .tl-block { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; transition: border-color .2s; }
+  .tl-block:hover { border-color: var(--accent); }
+  .tl-block.purple { border-color: rgba(200,180,232,.4); box-shadow: 0 0 12px var(--glow); }
+  .tl-block.gold { border-color: rgba(240,208,128,.3); }
+  .tl-name { font-weight: 700; font-size: .88rem; margin-bottom: 4px; }
+  .tl-name.purple { color: var(--accent); }
+  .tl-name.gold { color: var(--accent2); }
+  .tl-bars { font-family: 'DM Mono', monospace; font-size: .62rem; color: var(--muted); margin-bottom: 4px; }
+  .tl-desc { font-size: .76rem; color: var(--muted); line-height: 1.6; }
+  .tl-tip { font-size: .73rem; color: var(--accent); margin-top: 5px; }
+
+  /* コード */
+  .prog-list { display: flex; flex-direction: column; gap: 10px; }
+  .prog-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; transition: border-color .2s; }
+  .prog-item:hover { border-color: var(--accent); }
+  .prog-item.featured { border-color: rgba(200,180,232,.5); box-shadow: 0 0 18px var(--glow); }
+  .prog-name { font-family: 'DM Mono', monospace; font-size: .65rem; color: var(--accent3); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 10px; }
+  .prog-chords { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .prog-chord { background: rgba(200,180,232,.1); border: 1px solid rgba(200,180,232,.28); border-radius: 6px; padding: 6px 14px; font-family: 'DM Mono', monospace; font-size: .9rem; color: var(--accent); }
+  .prog-chord.gold { background: rgba(240,208,128,.08); border-color: rgba(240,208,128,.28); color: var(--accent2); }
+  .prog-chord.blue { background: rgba(122,184,212,.08); border-color: rgba(122,184,212,.28); color: var(--accent3); }
+  .prog-arrow { color: var(--muted); font-family: 'DM Mono', monospace; }
+  .prog-scene { font-size: .78rem; color: var(--muted); margin-top: 8px; line-height: 1.65; }
+  .prog-tip { margin-top: 8px; background: rgba(200,180,232,.06); border-left: 2px solid var(--accent); padding: 6px 12px; border-radius: 0 6px 6px 0; font-size: .78rem; color: var(--accent); line-height: 1.65; }
+  .prog-tip.gold { border-left-color: var(--accent2); color: var(--accent2); background: rgba(240,208,128,.05); }
+
+  /* 音源 */
+  .palette-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 10px; }
+  .palette-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; transition: all .2s; }
+  .palette-card:hover { border-color: var(--accent); box-shadow: 0 0 10px var(--glow); }
+  .palette-cat { font-family: 'DM Mono', monospace; font-size: .6rem; color: var(--accent2); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 8px; }
+  .palette-name { font-weight: 700; font-size: .88rem; margin-bottom: 4px; }
+  .palette-logic { font-size: .72rem; color: var(--muted); line-height: 1.6; }
+
+  /* テクニック */
+  .tech-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+  .tech-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; transition: all .2s; }
+  .tech-card:hover { border-color: var(--accent2); box-shadow: 0 0 10px var(--glow2); }
+  .tech-icon { font-size: 1.4rem; margin-bottom: 8px; }
+  .tech-name { font-weight: 700; font-size: .9rem; margin-bottom: 6px; color: var(--accent); }
+  .tech-desc { font-size: .78rem; color: var(--muted); line-height: 1.65; }
+  .tech-how { font-family: 'DM Mono', monospace; font-size: .68rem; color: var(--accent3); margin-top: 8px; line-height: 1.55; }
+
+  /* ステップ */
+  .steps { display: flex; flex-direction: column; gap: 12px; }
+  .step { display: grid; grid-template-columns: 48px 1fr; background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color .2s; }
+  .step:hover { border-color: var(--accent); box-shadow: 0 0 14px var(--glow); }
+  .step-num { background: linear-gradient(180deg, var(--accent) 0%, #8866cc 100%); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: .95rem; color: #0c0c14; min-height: 56px; font-weight: 500; }
+  .step-body { padding: 14px 18px; }
+  .step-label { font-family: 'DM Mono', monospace; font-size: .62rem; color: var(--accent3); letter-spacing: .12em; margin-bottom: 4px; text-transform: uppercase; }
+  .step-title { font-size: .98rem; font-weight: 700; margin-bottom: 6px; }
+  .step-desc { font-size: .83rem; color: var(--muted); line-height: 1.7; }
+  .step-tip { margin-top: 8px; background: rgba(200,180,232,.06); border-left: 2px solid var(--accent); padding: 6px 12px; border-radius: 0 6px 6px 0; font-size: .78rem; color: var(--accent); }
+
+  /* メロディーヒント */
+  .melody-box { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+  .melody-title { font-weight: 700; color: var(--accent2); margin-bottom: 12px; font-size: .9rem; }
+  .note-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .note-chip { background: rgba(200,180,232,.08); border: 1px solid rgba(200,180,232,.2); border-radius: 6px; padding: 6px 12px; font-family: 'DM Mono', monospace; font-size: .8rem; color: var(--accent); }
+  .note-chip.key { background: rgba(200,180,232,.2); border-color: rgba(200,180,232,.5); }
+  .melody-hint { font-size: .8rem; color: var(--muted); line-height: 1.8; }
+  .melody-hint strong { color: var(--accent2); }
+
+  /* 歌詞世界観ヒント */
+  .lyric-box { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+  .lyric-title { font-weight: 700; color: var(--accent); margin-bottom: 12px; font-size: .9rem; }
+  .lyric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .lyric-item { background: rgba(200,180,232,.05); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; font-size: .78rem; color: var(--muted); line-height: 1.6; }
+  .lyric-item strong { color: var(--accent2); display: block; margin-bottom: 4px; font-size: .75rem; }
+
+  /* チェックリスト */
+  .checklist { display: flex; flex-direction: column; gap: 8px; }
+  .check-item { display: flex; align-items: flex-start; gap: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; cursor: pointer; transition: border-color .2s; user-select: none; }
+  .check-item:hover { border-color: var(--accent); }
+  .check-item.done { opacity: .4; }
+  .check-item.done .check-box { background: var(--accent); border-color: var(--accent); }
+  .check-item.done .check-box::after { opacity: 1; }
+  .check-box { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 5px; flex-shrink: 0; margin-top: 1px; position: relative; transition: all .2s; }
+  .check-box::after { content: '✓'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: .75rem; color: #0c0c14; opacity: 0; transition: opacity .2s; }
+  .check-text { font-size: .85rem; line-height: 1.55; }
+  .check-sub { font-family: 'DM Mono', monospace; font-size: .7rem; color: var(--muted); margin-top: 2px; }
+
+  .footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size: .72rem; border-top: 1px solid var(--border); margin-top: 40px; line-height: 1.8; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="lemon-deco" style="top:20%;left:8%;animation-delay:0s;">🍋</span>
+  <span class="lemon-deco" style="top:30%;right:10%;animation-delay:1.5s;">🍋</span>
+  <span class="lemon-deco" style="top:60%;left:5%;animation-delay:2.5s;font-size:.9rem;">✦</span>
+  <span class="lemon-deco" style="top:15%;right:6%;animation-delay:0.8s;font-size:.9rem;">✦</span>
+
+  <p class="hero-eyebrow">Logic Pro × 作曲テンプレ ― J-POP特化版</p>
+  <h1>喪失と記憶の<br>ポップソング</h1>
+  <div class="hero-sub">米津玄師「レモン」スタイル</div>
+  <p>「レモン」は「悲しみ」じゃなくて「記憶」の歌。<br>切なくて美しくて、でも静かな力強さがある。<br>難しい理論より、感情の温度を音に変える。</p>
+  <div class="badge-row">
+    <span class="badge">中高大学生向け</span>
+    <span class="badge">Logic Pro</span>
+    <span class="badge">J-POP特化</span>
+    <span class="badge">米津玄師スタイル</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- スタイル特徴 -->
+  <div class="sec-title">「レモン」スタイルの特徴</div>
+  <div class="style-grid">
+    <div class="style-card">
+      <div class="style-icon">🍋</div>
+      <div class="style-name">静と動のコントラスト</div>
+      <div class="style-desc">Aメロは静かで内省的、サビで感情が溢れ出す。この落差が「レモン」の核心</div>
+    </div>
+    <div class="style-card">
+      <div class="style-icon">🎹</div>
+      <div class="style-name">ピアノが主役</div>
+      <div class="style-desc">ピアノのシンプルなアルペジオが曲全体を支える。音数が少ないほど感情が伝わる</div>
+    </div>
+    <div class="style-card">
+      <div class="style-icon">🌊</div>
+      <div class="style-name">ストリングスの感動</div>
+      <div class="style-desc">サビでストリングスが一気に入る。これが「レモン」の感動の正体のひとつ</div>
+    </div>
+    <div class="style-card">
+      <div class="style-icon">🎤</div>
+      <div class="style-name">メロディーが文学的</div>
+      <div class="style-desc">歌詞とメロディーが一体化している。「音」より「言葉を乗せる器」としてメロを作る</div>
+    </div>
+    <div class="style-card">
+      <div class="style-icon">🌙</div>
+      <div class="style-name">転調で感情が動く</div>
+      <div class="style-desc">サビで短調から長調（または逆）に動く。この瞬間に「泣ける」感覚が生まれる</div>
+    </div>
+    <div class="style-card">
+      <div class="style-icon">✦</div>
+      <div class="style-name">余白の美しさ</div>
+      <div class="style-desc">音符と音符の間の「空白」が感情を生む。詰め込みすぎないのが米津スタイル</div>
+    </div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="sec-title">STEP 01 ― まず設定する</div>
+  <table class="param-table" style="background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+    <thead><tr><th>パラメータ</th><th>おすすめ値</th><th>理由</th></tr></thead>
+    <tbody>
+      <tr><td>BPM</td><td>76</td><td>「レモン」は遅め。切なさと記憶の揺らぎを表現するテンポ</td></tr>
+      <tr><td>キー</td><td>D minor（Dマイナー）</td><td>「レモン」と同じキー。哀愁と美しさが同居する</td></tr>
+      <tr><td>拍子</td><td>4/4</td><td>基本はこれ</td></tr>
+      <tr><td>全体の印象</td><td>静か→爆発→静か</td><td>感情の温度差が「レモン」のドラマを生む</td></tr>
+    </tbody>
+  </table>
+
+  <!-- STEP 2 -->
+  <div class="sec-title">STEP 02 ― 構成（感情の波を設計する）</div>
+  <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;">「レモン」は感情の起伏が構成で全て決まる。静寂→爆発→静寂のサイクルを丁寧に作る。</p>
+
+  <div class="timeline">
+    <div class="tl-row">
+      <div class="tl-time">0:00</div>
+      <div class="tl-block">
+        <div class="tl-name">イントロ</div>
+        <div class="tl-bars">8小節</div>
+        <div class="tl-desc">ピアノのアルペジオだけ。静かに、霧の中を歩くように始まる。音数は最小限</div>
+        <div class="tl-tip">💡 余白を恐れない。音符がない空間が「記憶」を感じさせる</div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-time">0:22</div>
+      <div class="tl-block">
+        <div class="tl-name">Aメロ（ヴァース）</div>
+        <div class="tl-bars">16小節</div>
+        <div class="tl-desc">ピアノ＋薄いパッド。歌詞が全て。内省的で、記憶を辿るような雰囲気。ドラムはなし、またはハイハットだけ</div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-time gold">1:00</div>
+      <div class="tl-block gold">
+        <div class="tl-name gold">プリコーラス（Bメロ）</div>
+        <div class="tl-bars">8小節</div>
+        <div class="tl-desc">感情が高まり始める。ベースが入る。「もう少しで溢れる」寸前の緊張感</div>
+        <div class="tl-tip">💡 ここでストリングスをppで忍び込ませると、サビの爆発がより大きく聞こえる</div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-time purple">1:22</div>
+      <div class="tl-block purple">
+        <div class="tl-name purple">★ サビ（コーラス）</div>
+        <div class="tl-bars">16小節</div>
+        <div class="tl-desc">全楽器が入る。ストリングスが一気に広がる。ドラムのキックが初めて鳴る。感情が溢れ出す瞬間</div>
+        <div class="tl-tip">💡 サビはAメロの2倍の音数にする。この落差が「レモン」の感動の源泉</div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-time">2:00</div>
+      <div class="tl-block">
+        <div class="tl-name">Aメロ2</div>
+        <div class="tl-bars">16小節</div>
+        <div class="tl-desc">また静かに戻る。1番より少し深い場所に降りていく。ドラムを抜いてピアノだけに戻す</div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-time gold">2:38</div>
+      <div class="tl-block gold">
+        <div class="tl-name gold">プリコーラス2</div>
+        <div class="tl-bars">8小節</div>
+        <div class="tl-desc">同じ構成。ただし内側の感情は1番より強くなっている</div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-time purple">3:00</div>
+      <div class="tl-block purple">
+        <div class="tl-name purple">★ サビ2</div>
+        <div class="tl-bars">16小節</div>
+        <div class="tl-desc">コピペでOK。ストリングスをより厚く。音量を少し上げるだけで感情が倍になる</div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-time">3:38</div>
+      <div class="tl-block">
+        <div class="tl-name">落ちサビ（最重要）</div>
+        <div class="tl-bars">8小節</div>
+        <div class="tl-desc">ピアノとボーカルだけ。全楽器を抜く。「レモン」で最も泣けるのがここ。静けさが感情を凝縮する</div>
+        <div class="tl-tip">💡 「落ちサビ→大サビ」の落差が「レモン」最大の感動ポイント</div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-time purple">4:00</div>
+      <div class="tl-block purple">
+        <div class="tl-name purple">★ 大サビ（クライマックス）</div>
+        <div class="tl-bars">16小節</div>
+        <div class="tl-desc">全楽器が戻る。ストリングスを最大に。「記憶の中の人」への最後のメッセージ</div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-time">4:38</div>
+      <div class="tl-block">
+        <div class="tl-name">アウトロ</div>
+        <div class="tl-bars">8小節</div>
+        <div class="tl-desc">ピアノだけに戻る。イントロと同じフレーズで締める。「記憶が繰り返す」感覚</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="sec-title">STEP 03 ― コード進行（感情の設計図）</div>
+
+  <div class="prog-list">
+    <div class="prog-item">
+      <div class="prog-name">🌙 Aメロ ― 静かで揺らぐ進行</div>
+      <div class="prog-chords">
+        <span class="prog-chord">Dm</span><span class="prog-arrow">→</span>
+        <span class="prog-chord">Bb</span><span class="prog-arrow">→</span>
+        <span class="prog-chord">F</span><span class="prog-arrow">→</span>
+        <span class="prog-chord">C</span>
+      </div>
+      <div class="prog-scene">🎵 各2小節ずつ。ピアノのアルペジオで弾く。コードは長く伸ばして、音符を詰め込まない</div>
+      <div class="prog-tip">ピアノは和音を一気に弾かず、上から D → A → F → D のように1音ずつ分散して弾く（アルペジオ）</div>
+    </div>
+
+    <div class="prog-item">
+      <div class="prog-name">✦ プリコーラス ― 感情が高まる</div>
+      <div class="prog-chords">
+        <span class="prog-chord">Gm</span><span class="prog-arrow">→</span>
+        <span class="prog-chord">A</span><span class="prog-arrow">→</span>
+        <span class="prog-chord">Bb</span><span class="prog-arrow">→</span>
+        <span class="prog-chord">A</span>
+      </div>
+      <div class="prog-tip gold">最後のA（メジャー）が「サビへの扉」。Aマイナーじゃなくてメジャーを使うのが重要。緊張感が一気に高まる</div>
+      <div class="prog-scene">🎵 ここだけリズムを少し細かく（4分音符→8分音符）すると波が高くなる感じが出る</div>
+    </div>
+
+    <div class="prog-item featured">
+      <div class="prog-name">⭐ サビ ― 悲しみが美しさに変わる瞬間</div>
+      <div class="prog-chords">
+        <span class="prog-chord gold">F</span><span class="prog-arrow">→</span>
+        <span class="prog-chord gold">C</span><span class="prog-arrow">→</span>
+        <span class="prog-chord gold">Dm</span><span class="prog-arrow">→</span>
+        <span class="prog-chord gold">Bb</span>
+      </div>
+      <div class="prog-scene">🎵 Dマイナーキーのまま、明るさを帯びた進行。悲しいのに美しい、この矛盾が「レモン」の感動</div>
+      <div class="prog-tip">サビはコードを各1小節で切り替える。ストリングスをff（フォルテ）で一気に入れる</div>
+    </div>
+
+    <div class="prog-item">
+      <div class="prog-name">🍋 落ちサビ ― 最も感情が剥き出しになる</div>
+      <div class="prog-chords">
+        <span class="prog-chord blue">Dm</span><span class="prog-arrow">→</span>
+        <span class="prog-chord blue">Bb</span><span class="prog-arrow">→</span>
+        <span class="prog-chord blue">F</span><span class="prog-arrow">→</span>
+        <span class="prog-chord blue">C</span>
+      </div>
+      <div class="prog-scene">🎵 Aメロと同じ進行。でもここではピアノとメロディーだけで鳴らす。全楽器を抜くことで「孤独」が際立つ</div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="sec-title">STEP 04 ― Logic Proで使う音源</div>
+  <div class="palette-grid">
+    <div class="palette-card"><div class="palette-cat">🎹 ピアノ（主役）</div><div class="palette-name">Steinway Grand Piano</div><div class="palette-logic">プリセット：<br>「Concert Grand」<br>全セクションの土台。音数少なく、丁寧に</div></div>
+    <div class="palette-card"><div class="palette-cat">🎻 ストリングス</div><div class="palette-name">Studio Strings</div><div class="palette-logic">プリセット：<br>「Ensemble Strings」<br>サビでの感動の主役。Aメロでは鳴らさない</div></div>
+    <div class="palette-card"><div class="palette-cat">🥁 ドラム</div><div class="palette-name">Drummer</div><div class="palette-logic">スタイル：「Alternative」<br>サビだけ入れる。ライドシンバル中心の繊細なパターン</div></div>
+    <div class="palette-card"><div class="palette-cat">🎸 ベース</div><div class="palette-name">Bass Amp Designer</div><div class="palette-logic">プリセット：<br>「Clean Bass」<br>ルート音だけ。主張しすぎない。プリコーラスから登場</div></div>
+    <div class="palette-card"><div class="palette-cat">🌊 パッド</div><div class="palette-name">Alchemy</div><div class="palette-logic">プリセット：<br>「Warm Pad」<br>Aメロで薄く鳴らす。−15dBくらい。空気感を出す</div></div>
+    <div class="palette-card"><div class="palette-cat">✨ ベルトーン</div><div class="palette-name">Alchemy</div><div class="palette-logic">プリセット：<br>「Crystal Bell」<br>イントロと間奏でピアノの上を飾る。記憶のような高音</div></div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="sec-title">STEP 05 ― 「レモン」スタイルの必須テクニック</div>
+  <div class="tech-grid">
+    <div class="tech-card">
+      <div class="tech-icon">🎹</div>
+      <div class="tech-name">ピアノアルペジオ</div>
+      <div class="tech-desc">和音を同時に弾かず、1音ずつバラして弾く。これが「レモン」の繊細な揺らぎの正体</div>
+      <div class="tech-how">→ ピアノロールでコードの音を縦に並べず、斜めに（時間差で）配置する。各音の間隔は8分音符</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon">🌊</div>
+      <div class="tech-name">ストリングスの「入り方」</div>
+      <div class="tech-desc">サビの頭でストリングスが一気に入る瞬間が感動を生む</div>
+      <div class="tech-how">→ Aメロではストリングスをミュート。サビの1拍目からffで入れる。音量オートメーションで0→100に</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon">🔇</div>
+      <div class="tech-name">落ちサビの「引き算」</div>
+      <div class="tech-desc">最も感動する瞬間は「音を増やす」ではなく「全部取り去る」こと</div>
+      <div class="tech-how">→ 落ちサビでドラム・ベース・ストリングスを全てミュート。ピアノとメロディーだけに</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon">🌙</div>
+      <div class="tech-name">リバーブで「空間」を作る</div>
+      <div class="tech-desc">「記憶の中」にいるような空間感。特にピアノに深めのリバーブ</div>
+      <div class="tech-how">→ ChromaVerbをピアノに挿してプリセット「Large Hall」。Wetを30%程度</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon">🎤</div>
+      <div class="tech-name">メロディーの「間（ま）」</div>
+      <div class="tech-desc">フレーズの後に必ず空白を作る。この「無音」が感情を増幅させる</div>
+      <div class="tech-how">→ メロディーの音符を伸ばしすぎない。歌詞1フレーズ→1〜2拍の空白→次のフレーズ</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon">✦</div>
+      <div class="tech-name">Velocityの強弱</div>
+      <div class="tech-desc">同じコードでもVelocityを変えるだけで「感情の波」が生まれる</div>
+      <div class="tech-how">→ Aメロのピアノは50〜70。サビは80〜100。落ちサビは40〜60に戻す</div>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="sec-title">STEP 06 ― メロディーの作り方（米津スタイル）</div>
+  <div class="melody-box">
+    <div class="melody-title">🍋 Dマイナースケール ― 使っていい音</div>
+    <div class="note-row">
+      <div class="note-chip key">D（レ）</div>
+      <div class="note-chip">E（ミ）</div>
+      <div class="note-chip key">F（ファ）</div>
+      <div class="note-chip key">G（ソ）</div>
+      <div class="note-chip key">A（ラ）</div>
+      <div class="note-chip">Bb（シ♭）</div>
+      <div class="note-chip">C（ド）</div>
+    </div>
+    <div class="melody-hint">
+      <strong>Aメロのコツ</strong>：低い音域（D〜A）を中心に。語りかけるように、ゆっくりと。音が跳ばないなめらかなライン。<br><br>
+      <strong>サビのコツ</strong>：高い音域（F〜D上）を中心に。メロディーが一気に上がる「ジャンプ」を1か所作る。ここが感情の解放点。<br><br>
+      <strong>落ちサビのコツ</strong>：Aメロより低めに。「内側に沈んでいく」ようなメロディー。<br><br>
+      <strong>米津玄師の特徴</strong>：メロディーが言葉のイントネーションに沿っている。日本語の自然なリズムでメロを作ると「らしさ」が出る。
+    </div>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="sec-title">STEP 07 ― 歌詞の世界観ヒント</div>
+  <div class="lyric-box">
+    <div class="lyric-title">🍋 「レモン」スタイルの歌詞を作るための視点</div>
+    <div class="lyric-grid">
+      <div class="lyric-item"><strong>Aメロ ― 情景描写</strong>「どんな場所にいるか」を具体的に書く。季節・光・匂いなど五感を使う</div>
+      <div class="lyric-item"><strong>サビ ― 感情の爆発</strong>一番言いたいことをシンプルに。長い言葉より短い言葉の方が刺さる</div>
+      <div class="lyric-item"><strong>使える言葉の世界観</strong>光・影・記憶・香り・消える・残る・あの日・君・名前・手・空</div>
+      <div class="lyric-item"><strong>避けること</strong>説明しすぎない。感情を直接言わない（「悲しい」より「レモンの香りがした」）</div>
+    </div>
+  </div>
+
+  <!-- STEP 8 -->
+  <div class="sec-title">STEP 08 ― Logic Proでの作業順</div>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-label">プロジェクト作成</div><div class="step-title">BPM 76・Dマイナーで開始</div><div class="step-desc">File → New Project → BPM 76に設定。「遅い」と感じるくらいでいい。このテンポが「記憶の中にいる感覚」を作る。</div><div class="step-tip">💡 最初にピアノだけで曲の骨格を作る。ピアノが完成したら他の楽器は自然と決まる</div></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-label">ピアノアルペジオ</div><div class="step-title">Steinway Grand Pianoでイントロのアルペジオを作る</div><div class="step-desc">Dm→Bb→F→C のコードを、1音ずつバラして8分音符で打ち込む。Velocityは50〜70でランダムに変化させる。これが曲の「心臓部」になる。</div><div class="step-tip">💡 まず8小節だけ作って、後で全セクションにコピーして使い回す</div></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-label">パッドを薄く</div><div class="step-title">AlchemyのWarm PadをAメロで薄く鳴らす</div><div class="step-desc">コードを長く伸ばしてAメロに配置。音量は−15〜−18dBで「聴こえるか聴こえないか」くらいに。空気感が生まれる。</div><div class="step-tip">💡 パッドは存在を主張しない。「なんかいる」程度でいい</div></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-label">メロディー</div><div class="step-title">Dマイナースケールでメロディーを打ち込む</div><div class="step-desc">Aメロは低め（D〜A）、サビは高め（F〜D上）。フレーズの後に必ず1〜2拍の空白を入れる。「息継ぎ」が感情を育てる。</div><div class="step-tip">💡 メロディーを打ち込んだら、一度声で歌ってみる。歌えないメロは聴きにくい</div></div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-label">プリコーラス設計</div><div class="step-title">ベースを入れてストリングスをppで忍び込ませる</div><div class="step-desc">プリコーラスからベースのルート音を入れる。ストリングスをVelocity 30程度で薄く開始。これが「サビの予感」を作る。</div><div class="step-tip">💡 Gm→A→Bb→A の最後のAコードを2小節使ってサビへの期待を最大にする</div></div></div>
+    <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-label">サビを爆発させる</div><div class="step-title">ストリングス・ドラムをサビ頭から一気に入れる</div><div class="step-desc">サビの1拍目からStudio Stringsをff（Velocity 100）で入れる。Drummerをプリコーラスから試験的に入れ、サビで音量を上げる。この瞬間が感動のピーク。</div><div class="step-tip">💡 ストリングスのVolオートメーションをプリコーラスで0から徐々に上げてサビで100にすると自然</div></div></div>
+    <div class="step"><div class="step-num">7</div><div class="step-body"><div class="step-label">落ちサビを作る</div><div class="step-title">全楽器を抜いてピアノとメロディーだけにする</div><div class="step-desc">落ちサビのセクションでドラム・ベース・ストリングス・パッドを全てミュート。ピアノのアルペジオとメロディーだけを残す。この静けさが「レモン」最大の感動を生む。</div><div class="step-tip">💡 落ちサビのピアノのVelocityを40〜60に下げるとより内省的になる</div></div></div>
+    <div class="step"><div class="step-num">8</div><div class="step-body"><div class="step-label">大サビ→アウトロ</div><div class="step-title">大サビで全楽器を戻し、アウトロはピアノだけで締める</div><div class="step-desc">大サビはサビ2のコピーで全楽器が入る。そこからアウトロはイントロと同じピアノアルペジオに戻る。「始まりと終わりが同じ場所」が記憶の円環を表現する。</div><div class="step-tip">💡 アウトロでリバーブを深めにかけて、ゆっくりフェードアウトさせると余韻が美しい</div></div></div>
+  </div>
+
+  <!-- チェックリスト -->
+  <div class="sec-title">STEP 09 ― 完成チェックリスト</div>
+  <div class="checklist">
+    <div class="check-item" onclick="this.classList.toggle('done')"><div class="check-box"></div><div><div class="check-text">BPMを76に設定した</div><div class="check-sub">記憶の中にいる速さ</div></div></div>
+    <div class="check-item" onclick="this.classList.toggle('done')"><div class="check-box"></div><div><div class="check-text">ピアノのアルペジオを作った（1音ずつバラして打ち込んだ）</div></div></div>
+    <div class="check-item" onclick="this.classList.toggle('done')"><div class="check-box"></div><div><div class="check-text">Aメロにパッドを薄く（−15dB）入れた</div></div></div>
+    <div class="check-item" onclick="this.classList.toggle('done')"><div class="check-box"></div><div><div class="check-text">メロディーを作った（フレーズ間に空白あり）</div></div></div>
+    <div class="check-item" onclick="this.classList.toggle('done')"><div class="check-box"></div><div><div class="check-text">プリコーラスでベースを入れた</div></div></div>
+    <div class="check-item" onclick="this.classList.toggle('done')"><div class="check-box"></div><div><div class="check-text">サビ頭でストリングスをffで一気に入れた</div></div></div>
+    <div class="check-item" onclick="this.classList.toggle('done')"><div class="check-box"></div><div><div class="check-text">落ちサビで全楽器を抜いてピアノだけにした</div></div></div>
+    <div class="check-item" onclick="this.classList.toggle('done')"><div class="check-box"></div><div><div class="check-text">ChromaVerbでピアノにリバーブをかけた（Large Hall）</div></div></div>
+    <div class="check-item" onclick="this.classList.toggle('done')"><div class="check-box"></div><div><div class="check-text">アウトロはイントロと同じピアノで締めた</div></div></div>
+    <div class="check-item" onclick="this.classList.toggle('done')"><div class="check-box"></div><div><div class="check-text">通して聴いて落ちサビで「泣けた」</div><div class="check-sub">これが合格サイン</div></div></div>
+    <div class="check-item" onclick="this.classList.toggle('done')"><div class="check-box"></div><div><div class="check-text">書き出し（File → Bounce）した</div></div></div>
+  </div>
+
+</div>
+
+<div class="footer">
+  米津玄師「レモン」スタイル 作曲テンプレ for Logic Pro<br>
+  J-POP特化版 ｜ 中高大学生向け ｜ 思考停止OK<br>
+  <span style="color:rgba(255,255,255,.07);font-size:.65rem;margin-top:4px;display:block;">シリーズ：アニソン ✓ ｜ LoFi ✓ ｜ J-POP ✓ ｜ Jazz ✓ ｜ EDM ✓ ｜ Rock ✓ ｜ SHISHAMO ✓ ｜ 米津玄師 ✓</span>
+</div>
+
+</body>
+</html>
